@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Explorer - Advanced Trip Planner</title>
+    <link rel="stylesheet" href="style.css"> 
+    
+    <style>
+        /* === TRIP PLANNER STYLES === */
+        .planner-container {
+            width: 90%; 
+            max-width: 750px; /* Increased width for more controls */
+            margin: 30px auto; 
+            padding: 30px;
+            background: #ffffff; 
+            border-radius: 12px; 
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-controls, .input-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        /* Styling the control fields (Location, Transport, Budget) */
+        .input-controls > * {
+            flex: 1; /* Makes all controls share space equally */
+        }
+        
+        .input-controls label {
+            font-weight: bold;
+            color: #007BFF;
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        #location-input, .input-controls input, .input-controls select {
+            width: 100%; 
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        .add-button {
+            padding: 10px 15px;
+            background-color: #28a745; /* Success Green */
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+        .add-button:hover {
+            background-color: #218838;
+        }
+
+        /* Results & List */
+        #itinerary-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        .itinerary-item {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 80px; /* Location, Transport, Budget, Remove */
+            gap: 10px;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 8px;
+            background-color: #f8faff;
+            border-radius: 8px;
+            border-left: 5px solid #007BFF;
+            font-size: 0.95rem;
+        }
+        
+        .item-text, .item-transport, .item-budget {
+            color: #333;
+        }
+        
+        .item-transport { font-style: italic; color: #555; }
+        .item-budget { font-weight: bold; color: #dc3545; }
+
+
+        .remove-button {
+            background-color: #dc3545;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        
+        /* Summary Table/Box */
+        #summary-table {
+            margin-top: 30px;
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        #summary-table th, #summary-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+
+        #summary-table th {
+            background-color: #007BFF;
+            color: white;
+        }
+        
+        #summary-table tr:nth-child(even) {
+            background-color: #f8faff;
+        }
+        
+        .highlight-value {
+            font-weight: bold;
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="logged-out-header" class="top-links">
+        <a href="signup.html"><h3>Sign Up</h3></a> 
+        <a href="login.html"><h3>Sign In</h3></a> 
+        <a href="https://www.google.co.in/"><h3>🔎 Search</h3></a>
+    </div>
+    <div id="logged-in-header" class="top-links" style="display: none;">
+        <a href="#" id="menu-toggle" class="menu-icon">☰</a>
+        <a href="https://www.google.co.in/"><h3>🔎 Search</h3></a>
+        <a href="profile.html" class="user-icon">👤</a>
+    </div>
+    <div id="sidebar-menu" class="sidebar">
+        <a href="index.html">🏠 Home</a>
+        <a href="index2.html">🗺️ Explore</a>
+        <a href="index3.html">ℹ️ About us</a>
+        <a href="feedback.html">🗣️ Feedback</a>
+        <a href="index4.html" class="active-link">📅 Trip Planner</a> 
+        <hr>
+        <a href="profile.html">⚙️ Settings / Profile</a>
+        <a href="#" id="logout-link" class="logout-link">🚪 Log Out</a> 
+    </div>
+    <div class="planner-container">
+        <h2 style="text-align: center; color:#007BFF; margin-bottom: 10px;">📅 Advanced Trip Planner & Estimator</h2>
+        <p style="text-align: center; color: #555; margin-bottom: 25px;">
+            Build your itinerary, select transport, and get instant estimations for time and budget.
+        </p>
+
+        <div class="input-controls">
+            <div style="flex: 2.5;">
+                <label for="location-input">Location</label>
+                <input type="text" id="location-input" placeholder="City or POI (e.g., Chennai, Agra Fort)">
+            </div>
+            <div style="flex: 1;">
+                <label for="transport-select">Transport</label>
+                <select id="transport-select">
+                    <option value="Train">Train 🚂</option>
+                    <option value="Bus">Bus 🚌</option>
+                    <option value="Flight">Flight ✈️</option>
+                    <option value="Car">Car 🚗</option>
+                </select>
+            </div>
+            <div style="flex: 1.5;">
+                <label for="budget-input">Estimated Budget (₹)</label>
+                <input type="number" id="budget-input" placeholder="Per destination (e.g., 5000)">
+            </div>
+            <button class="action-button add-button" style="align-self: flex-end;" onclick="addLocation()">Add to Trip</button>
+        </div>
+
+        <hr style="margin-top: 10px; margin-bottom: 20px;">
+
+        <h3>Current Itinerary</h3>
+        <ul id="itinerary-list">
+            </ul>
+        
+        <h3 style="margin-top: 30px;">Trip Summary & Estimation</h3>
+        <table id="summary-table">
+            <thead>
+                <tr>
+                    <th>Total Locations</th>
+                    <th>Est. Distance</th>
+                    <th>Est. Total Time</th>
+                    <th>Est. Total Budget</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td id="summary-locations" class="highlight-value">0</td>
+                    <td id="summary-distance" class="highlight-value">0 km</td>
+                    <td id="summary-time" class="highlight-value">0 hours</td>
+                    <td id="summary-budget" class="highlight-value">₹ 0</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // *** START: App-Wide JavaScript (Header/Sidebar/Logout) ***
+        function updateHeaderState() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const loggedOutDiv = document.getElementById('logged-out-header');
+            const loggedInDiv = document.getElementById('logged-in-header');
+            if (isLoggedIn) {
+                loggedOutDiv.style.display = 'none';
+                loggedInDiv.style.display = 'flex'; 
+            } else {
+                loggedOutDiv.style.display = 'flex';
+                loggedInDiv.style.display = 'none';
+            }
+        }
+        updateHeaderState(); 
+
+        const menuToggle = document.getElementById('menu-toggle');
+        if (menuToggle) {
+            menuToggle.onclick = function() {
+                document.getElementById('sidebar-menu').classList.toggle('open');
+            };
+        }
+
+        const logoutLink = document.getElementById('logout-link');
+        if (logoutLink) {
+            logoutLink.onclick = function(e) {
+                e.preventDefault(); 
+                localStorage.setItem('isLoggedIn', 'false');
+                window.location.reload(); 
+            };
+        }
+        // *** END: App-Wide JavaScript ***
+
+        // *** START: Advanced Trip Planner Logic ***
+        const ITINERARY_KEY = 'travelExplorerAdvancedItinerary';
+        const listElement = document.getElementById('itinerary-list');
+        const inputElement = document.getElementById('location-input');
+        const transportElement = document.getElementById('transport-select');
+        const budgetElement = document.getElementById('budget-input');
+
+        // Load itinerary from localStorage on startup
+        // Itinerary items now store an object: { location: string, transport: string, budget: number }
+        let itinerary = JSON.parse(localStorage.getItem(ITINERARY_KEY)) || [];
+        
+        // --- Estimation Rules (DUMMY DATA for Demo) ---
+        // Distance and Time are cumulative guesses based on item count and transport.
+        const BASE_DISTANCE_KM = 350; // Average distance between two major cities
+        const TIME_MULTIPLIERS = {
+            'Train': 1.0,  // Base travel time
+            'Bus': 1.3,    // Bus is slower than train
+            'Flight': 0.2, // Flight is fastest
+            'Car': 1.1     // Car is slightly slower than train due to stops
+        };
+
+        function saveItinerary() {
+            localStorage.setItem(ITINERARY_KEY, JSON.stringify(itinerary));
+        }
+
+        function updateSummary() {
+            const count = itinerary.length;
+            let totalBudget = 0;
+            let totalDistance = 0;
+            let totalTimeHours = 0;
+            
+            // Calculate totals
+            itinerary.forEach((item, index) => {
+                totalBudget += item.budget || 0;
+                
+                if (index > 0) {
+                    // Add cumulative distance/time for travel between points
+                    const distance = BASE_DISTANCE_KM + (Math.random() * 150 - 75); // Add some randomness
+                    totalDistance += distance;
+                    
+                    // Estimate travel time based on transport (e.g., 6 hours per trip segment)
+                    const baseTripTime = 6; 
+                    totalTimeHours += (baseTripTime * TIME_MULTIPLIERS[item.transport]);
+                }
+            });
+
+            // Update the Summary Table
+            document.getElementById('summary-locations').textContent = count;
+            document.getElementById('summary-distance').textContent = `${Math.round(totalDistance)} km`;
+            document.getElementById('summary-time').textContent = `${Math.round(totalTimeHours)} hours`;
+            document.getElementById('summary-budget').textContent = `₹ ${totalBudget.toLocaleString('en-IN')}`;
+        }
+
+        function renderItinerary() {
+            listElement.innerHTML = ''; // Clear existing list
+            
+            if (itinerary.length === 0) {
+                listElement.innerHTML = `<p style="text-align: center; color: #888; padding: 10px;">Start by adding your first travel destination!</p>`;
+            }
+
+            itinerary.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.className = 'itinerary-item';
+                li.innerHTML = `
+                    <span class="item-text">${index + 1}. ${item.location}</span>
+                    <span class="item-transport">${item.transport}</span>
+                    <span class="item-budget">₹ ${item.budget.toLocaleString('en-IN')}</span>
+                    <button class="action-button remove-button" onclick="removeLocation(${index})">X</button>
+                `;
+                listElement.appendChild(li);
+            });
+            updateSummary();
+        }
+
+        function addLocation() {
+            const locationText = inputElement.value.trim();
+            const transport = transportElement.value;
+            const budget = parseInt(budgetElement.value, 10);
+            
+            if (!locationText) {
+                alert('Please enter a location name.');
+                return;
+            }
+            if (isNaN(budget) || budget <= 0) {
+                alert('Please enter a valid estimated budget (e.g., 5000).');
+                return;
+            }
+
+            const newItem = { location: locationText, transport: transport, budget: budget };
+            itinerary.push(newItem);
+            
+            saveItinerary();
+            renderItinerary();
+            
+            // Clear inputs for next entry
+            inputElement.value = '';
+            budgetElement.value = '';
+            transportElement.value = 'Train'; 
+        }
+
+        function removeLocation(index) {
+            if (confirm(`Remove "${itinerary[index].location}" from trip?`)) {
+                itinerary.splice(index, 1);
+                saveItinerary();
+                renderItinerary();
+            }
+        }
+
+        // Expose functions globally for HTML buttons
+        window.addLocation = addLocation;
+        window.removeLocation = removeLocation;
+
+        // Initial render on page load
+        renderItinerary();
+        // *** END: Advanced Trip Planner Logic ***
+    </script>
+</body>
+</html>

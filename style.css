@@ -1,0 +1,320 @@
+/* Base Reset & Body */
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  font-size: 16px; color: #333;
+  background: #f0f4f8; 
+  min-height:100vh;
+}
+
+/* Hero / Title */
+h1 { font-size: 2.5rem; text-align:center; margin: 30px;}
+h1 + h4 { font-size: 1.2rem; text-align:center; margin-bottom:20px;}
+
+/* Existing h1 style modification (for the main title) */
+h1{
+  font-style: italic;
+  font-family: 'Courier New', Courier, monospace;
+  text-align: left;
+}
+
+/* ------------------------------------------------------------------- */
+/* --- HEADER ICONS & SIDEBAR STYLES (Required for Dual Header) --- */
+/* ------------------------------------------------------------------- */
+
+/* Top/Sticky Nav - MODIFIED for Flexbox */
+.top-links {
+  display: flex;
+  justify-content: space-between; /* Spreads elements out (left, center, right) */
+  align-items: center; /* Vertically centers them */
+  padding:20 30px;
+  background: rgba(255,255,255,0.9); 
+  position: sticky; top:0;
+  z-index:10;
+}
+
+/* Base link style for top-links elements */
+.top-links a {
+  color:#333; 
+  font-weight:600; 
+  transition:color .3s;
+  text-decoration: none; 
+}
+.top-links a:hover { color:#007BFF; }
+
+/* Style for Icons */
+.menu-icon, .user-icon {
+    font-size: 28px; 
+    color: #333;
+    cursor: pointer;
+}
+
+/* Ensure the Search link's h3 looks good */
+.top-links a h3 {
+    margin: 0; 
+    font-size: 16px; 
+    font-weight: normal;
+}
+
+/* --- SIDEBAR MENU STYLES --- */
+.sidebar {
+    height: 100%;
+    width: 0; /* CRITICAL: Hides the menu initially */
+    position: fixed; 
+    z-index: 100; 
+    top: 0;
+    left: 0;
+    background-color: #fff; 
+    overflow-x: hidden;
+    padding-top: 60px;
+    transition: 0.5s; /* Smooth slide animation */
+    box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+}
+
+/* Class added by JavaScript to show the menu */
+.sidebar.open {
+    width: 250px; 
+}
+
+.sidebar a {
+    padding: 15px 25px;
+    text-decoration: none;
+    font-size: 17px;
+    color: #333;
+    display: block; 
+    transition: 0.3s;
+}
+
+.sidebar a:hover {
+    background-color: #f0f0f0;
+}
+
+.logout-link {
+    color: #e74c3c; /* Red color for Log Out */
+    font-weight: bold;
+}
+
+/* -------------------------------------------------------------------- */
+/* --- PROFESSIONAL LOGIN/SIGNUP BOX STYLES --- */
+/* -------------------------------------------------------------------- */
+.auth-container {
+    width: 90%;
+    max-width: 400px;
+    margin: 50px auto; 
+    padding: 35px;
+    background: #ffffff;
+    border-radius: 12px; 
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); 
+    text-align: center;
+    border-top: 5px solid #007BFF; /* Accent color */
+}
+
+.auth-container h2 {
+    margin-bottom: 30px;
+    color: #333; 
+    font-style: normal; 
+    font-size: 24px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.auth-form input {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px; 
+    box-sizing: border-box;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.auth-form input:focus {
+    border-color: #007BFF;
+    outline: none; 
+}
+
+/* Button Base Style for Auth Forms */
+.auth-form button {
+    padding: 15px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    width: 100%;
+    color: white;
+    transition: background 0.3s, transform 0.1s;
+}
+
+/* Specific button colors for Sign In (Blue) */
+.auth-container button[type="submit"] {
+    background: #007BFF; 
+}
+
+/* Specific button color for Sign Up (Green) - Target the form ID if using the separate HTML files */
+#signup-form button[type="submit"] {
+    background: #0ac97d; 
+   
+}
+
+/* Hover effects for Auth buttons */
+.auth-form button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px); 
+}
+
+/* Style for the link below the form (e.g., "Back to Home") */
+.switch-link {
+    display: block;
+    margin-top: 20px;
+    color: #555;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.switch-link:hover {
+    color: #007BFF;
+}
+
+/* ------------------------------------------------------------------- */
+/* --- MAIN CONTENT STYLES (Existing Logic) --- */
+/* ------------------------------------------------------------------- */
+
+/* Services Section */
+.section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap:30px; padding:0 20px 40px;
+}
+.section a {
+  display:block; text-decoration:none;
+  color:#444; text-align:center;
+  background:#fff; border-radius:10px;
+  overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.1);
+  transition: transform .3s, box-shadow .3s;
+}
+.section img {
+  width:100%; height: auto;
+  display:block; object-fit:cover;
+}
+.section h3 {
+  margin:15px 0; font-size:1.1rem;
+}
+.section a:hover {
+  transform:translateY(-5px);
+  box-shadow:0 8px 24px rgba(0,0,0,0.15);
+}
+
+/* Buttons (Base Styles) */
+/* Note: Auth buttons override the hover effect below */
+button, input[type="submit"], input[type="button"] {
+  background:#28a745; color:#fff;
+  padding:12px 25px; font-size:1rem;
+  border:none; border-radius:8px;
+  cursor:pointer; transition: background .3s, transform .2s;
+}
+button:hover, input[type="submit"]:hover, input[type="button"]:hover {
+  background:#218838; transform: translateY(-2px);
+}
+a{
+  text-decoration: none;
+}
+
+/* Responsive Hero Padding */
+@media(max-width:600px) {
+  body { padding:10px; }
+  h1 { font-size:2rem; }
+  .top-links a { margin:8px; padding:10px; }
+}
+
+
+/* --- FEEDBACK SECTION STYLES (Existing) --- */
+.feedback-section {
+  width: 80%; max-width: 800px; margin: 40px auto; padding: 25px;
+  background: #f6f1f1; border-radius: 12px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.feedback-section h2 {
+  text-align: center; color: #333; margin-bottom: 25px; font-size: 26px; font-weight: 600;
+}
+
+.feedback-form {
+  display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;
+}
+
+.feedback-form input, .feedback-form textarea {
+  padding: 12px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; transition: border 0.3s;
+}
+
+.feedback-form input:focus, .feedback-form textarea:focus {
+  border-color: #007bff; outline: none;
+}
+
+.feedback-form button {
+  background: #007bff; color: white; border: none; border-radius: 8px;
+  padding: 12px; font-weight: bold; cursor: pointer; transition: background 0.3s;
+}
+
+.feedback-form button:hover {
+  background: #0056b3;
+}
+
+.feedback-item {
+  background: #f8f8f8; padding: 18px; margin-top: 18px; border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.feedback-item h4 {
+  color: #007bff; margin: 0 0 8px; font-size: 18px;
+}
+
+.feedback-item p {
+  color: #333; margin: 0 0 10px; font-size: 15px;
+}
+
+/* Action buttons (like/comment) */
+.feedback-actions {
+  display: flex; gap: 12px; margin-top: 8px;
+}
+
+.feedback-actions button {
+  background: #007bff; color: white; border: none; border-radius: 6px;
+  padding: 6px 12px; font-size: 14px; cursor: pointer; transition: background 0.3s;
+}
+
+.feedback-actions button:hover {
+  background: #0056b3;
+}
+
+/* Comment box input */
+.comment-box {
+  display: flex; gap: 6px; margin-top: 10px;
+}
+
+.comment-box input {
+  flex: 1; padding: 6px 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px;
+}
+
+.comment-box button {
+  background: #28a745; color: white; border: none; border-radius: 6px;
+  padding: 6px 12px; font-size: 14px; cursor: pointer; transition: background 0.3s;
+}
+
+.comment-box button:hover {
+  background: #1e7e34;
+}
+
+/* Comments list */
+.comments-list {
+  margin-top: 10px; padding-left: 12px;
+}
+
+.comments-list p {
+  background: #e9ecef; padding: 6px 10px; border-radius: 6px; margin-top: 6px; font-size: 14px;
+}

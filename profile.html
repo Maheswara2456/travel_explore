@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Explorer - Your Travel Profile</title>
+    <link rel="stylesheet" href="style.css"> 
+    
+    <style>
+        /* New Styles for the Profile Tabs/Sections */
+        .profile-tabs {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        .profile-tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #555;
+            transition: color 0.3s, border-bottom 0.3s;
+        }
+        .profile-tab.active {
+            color: #007BFF;
+            border-bottom: 3px solid #007BFF;
+        }
+        .profile-content-section {
+            display: none;
+            padding: 15px 0;
+            text-align: left;
+        }
+        .profile-content-section.active {
+            display: block;
+        }
+        
+        /* Style for the history items */
+        .history-item {
+            background: #f4f7f9;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #007BFF;
+        }
+        .history-item p {
+            margin: 2px 0;
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auth-container" id="profile-container">
+        <h2>👤 Your Travel Profile</h2>
+        
+        <div class="profile-tabs">
+            <div class="profile-tab active" data-tab="info">About Me</div>
+            <div class="profile-tab" data-tab="trips">Travel Logs</div>
+            <div class="profile-tab" data-tab="search">Activity</div>
+        </div>
+
+        <div id="info" class="profile-content-section active">
+            <h3 style="color:#007BFF; margin-bottom: 15px;">Personal Details</h3>
+            <div style="text-align: left;">
+                <p><strong>Name:</strong> <span id="display-name">Mahesh Prabhuleti</span></p>
+                <p style="margin-top: 10px;"><strong>Email:</strong> <span id="display-email">maheshprabhuleti1012@gmail.com</span></p>
+            </div>
+            
+            <hr style="margin: 25px 0;">
+
+            <a href="settings.html" class="auth-form button" 
+               style="background-color: #28a745; text-decoration: none; display: block; padding: 12px; border-radius: 8px; color: white; font-weight: bold; margin-bottom: 10px;">
+               ⚙️ Go to Settings
+            </a>
+        </div>
+        
+        <div id="trips" class="profile-content-section">
+            <h3 style="color:#007BFF; margin-bottom: 15px;">My Recent Travel Logs (Pics)</h3>
+            <div id="trips-list">
+                <div class="history-item">
+                    <p>📍 **Trip to Goa**: 3 Photos</p>
+                    <p style="font-size: 13px; color:#777;">Posted 5 days ago</p>
+                </div>
+                <div class="history-item">
+                    <p>📍 **Local Restaurant Review**: 🍽️</p>
+                    <p style="font-size: 13px; color:#777;">Posted 2 weeks ago</p>
+                </div>
+                <div class="history-item">
+                    <p>📍 **Weekend in Chennai**: 🎥 1 Video</p>
+                    <p style="font-size: 13px; color:#777;">Posted 1 month ago</p>
+                </div>
+                <p style="text-align: center; margin-top: 20px; font-size: 14px; color: #777;">(In a real app, clicking these would show the content.)</p>
+            </div>
+        </div>
+
+        <div id="search" class="profile-content-section">
+            <h3 style="color:#007BFF; margin-bottom: 15px;">Recent Search Activity (Last 30 Days)</h3>
+            <div id="search-list">
+                <div class="history-item">
+                    <p>🔎 Searched for "Hotels near Airport"</p>
+                </div>
+                <div class="history-item">
+                    <p>🔎 Looked up "Top 5 Shopping Malls"</p>
+                </div>
+                <div class="history-item">
+                    <p>🔎 Viewed "Mumbai Travel Guide"</p>
+                </div>
+            </div>
+        </div>
+
+        <a href="index.html" class="switch-link">← Back to Home</a>
+    </div>
+
+    <script>
+        // --- Tab Switching Logic ---
+        document.querySelectorAll('.profile-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Remove active state from all tabs and content
+                document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.profile-content-section').forEach(s => s.classList.remove('active'));
+
+                // Add active state to the clicked tab
+                this.classList.add('active');
+
+                // Show the corresponding content section
+                const targetTab = this.getAttribute('data-tab');
+                document.getElementById(targetTab).classList.add('active');
+            });
+        });
+
+        // --- Login Check and Data Load (Existing Logic) ---
+        if (localStorage.getItem('isLoggedIn') !== 'true') {
+            alert('You must be logged in to view your profile.');
+            window.location.href = 'login.html';
+        }
+
+        // You can use the local storage to save user data upon successful login/signup
+        const userName = localStorage.getItem('userName') || 'Mahesh Prabhuleti';
+        const userEmail = localStorage.getItem('userEmail') || 'maheshprabhuleti1012@gmail.com';
+        
+        document.getElementById('display-name').textContent = userName;
+        document.getElementById('display-email').textContent = userEmail;
+
+    </script>
+
+</body>
+</html>

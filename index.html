@@ -6,20 +6,16 @@
     <title>TRAVEL EXPLORE</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="dharshan/chatbot.css" />
+
+    <!-- ✅ Leaflet Map CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
 
 <body>
 
-<!-- ==== HEADERS ==== -->
-<div id="logged-out-header" class="top-links">
-    <a href="signup.html"><h3>Sign Up</h3></a>
-    <a href="login.html"><h3>Sign In</h3></a>
-    <a href="https://www.google.co.in/"><h3>🔎 Search</h3></a>
-</div>
-
+<!-- ==== LOGGED IN HEADER (NO TOP LINKS) ==== -->
 <div id="logged-in-header" class="top-links" style="display: none;">
     <a href="#" id="menu-toggle" class="menu-icon">☰</a>
-    <a href="https://www.google.co.in/"><h3>🔎 Search</h3></a>
     <a href="profile.html" class="user-icon">👤</a>
 </div>
 
@@ -36,23 +32,23 @@
 </div>
 
 <h1 style="text-align: center; color: #007bff"><i>Discover Places Near You</i></h1>
-<h4 style="text-align: center; color: #555"><i>This is the best guide of your city</i></h4>
+<h4 style="text-align: center; color: #555"><i>Your personal travel companion</i></h4>
 
 <!-- ==== CATEGORY SECTION ==== -->
 <div class="section">
-    <a href="#" onclick="findNearby('Hotels'); return false;">
+    <a href="#" onclick="findNearby('hotel'); return false;">
         <img src="hotels.jpeg" /><h3><i>Hotels</i></h3>
     </a>
-    <a href="#" onclick="findNearby('Restaurants'); return false;">
+    <a href="#" onclick="findNearby('restaurant'); return false;">
         <img src="restra.jpeg" /><h3><i>Restaurants</i></h3>
     </a>
-    <a href="#" onclick="findNearby('Shopping Malls'); return false;">
+    <a href="#" onclick="findNearby('mall'); return false;">
         <img src="shopping.jpeg" /><h3><i>Shopping</i></h3>
     </a>
-    <a href="#" onclick="findNearby('Tourist Attractions'); return false;">
+    <a href="#" onclick="findNearby('travel_agency'); return false;">
         <img src="travel.jpeg" /><h3><i>Travels</i></h3>
     </a>
-    <a href="#" onclick="findNearby('Cinema Theatres'); return false;">
+    <a href="#" onclick="findNearby('cinema'); return false;">
         <img src="cinema.jpeg" /><h3><i>Cinema</i></h3>
     </a>
 </div>
@@ -70,10 +66,10 @@
     </div>
 </section>
 
-<!-- ==== MAP ==== -->
+<!-- ==== MAP (REPLACED IFRAME) ==== -->
 <section id="map-results">
     <h2>Nearby Results (Map View)</h2>
-    <iframe id="map-frame" width="100%" height="500" style="border-radius:10px;" loading="lazy"></iframe>
+    <div id="map" style="width:100%; height:500px; border-radius:10px;"></div>
 </section>
 
 <!-- ==== CHATBOT ==== -->
@@ -84,48 +80,74 @@
     <input type="text" id="chat-input" placeholder="Type your message..." />
 </div>
 
+<!-- ✅ Leaflet JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 <!-- ==== JS ==== -->
 <script type="module">
 import { auth } from "./firebase.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
+let map, userMarker;
+
 onAuthStateChanged(auth, (user) => {
     if (user) {
-        document.getElementById("logged-out-header").style.display = "none";
         document.getElementById("logged-in-header").style.display = "flex";
-        
-        // ✅ This triggers Chrome GPS permission popup
-        navigator.geolocation.getCurrentPosition(() => {}, () => {});
-    } else {
-        document.getElementById("logged-out-header").style.display = "flex";
-        document.getElementById("logged-in-header").style.display = "none";
+        initMap();
     }
 });
 
+// ✅ Initialize Map
+function initMap() {
+    navigator.geolocation.getCurrentPosition((pos) => {
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
+
+        map = L.map('map').setView([lat, lon], 15);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+        userMarker = L.marker([lat, lon]).addTo(map).bindPopup("📍 You are here").openPopup();
+
+    }, () => alert("Please allow location access ✅"));
+}
+
+// ✅ Nearby Places Search (Free, No Key)
+window.findNearby = function(tag) {
+    navigator.geolocation.getCurrentPosition((pos) => {
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
+
+        const query = `
+        [out:json];
+        node(around:2000, ${lat}, ${lon})["amenity"="${tag}"];
+        out;`;
+
+        fetch("https://overpass-api.de/api/interpreter", { method: "POST", body: query })
+        .then(r => r.json())
+        .then(data => {
+            data.elements.forEach(p => {
+                L.marker([p.lat, p.lon]).addTo(map)
+                .bindPopup(p.tags.name || "Unknown Place");
+            });
+        });
+    });
+};
+
+// ✅ City Search (OpenStreetMap)
+window.openMap = function(city) {
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${city}`)
+        .then(r => r.json())
+        .then(d => map.setView([d[0].lat, d[0].lon], 12));
+};
+
+// ✅ Log Out
 document.getElementById("logout-link")?.addEventListener("click", (e) => {
     e.preventDefault();
     signOut(auth).then(() => location.reload());
 });
 
-// ✅ NEARBY PLACES (CORRECTED)
-window.findNearby = function(place) {
-    navigator.geolocation.getCurrentPosition((pos) => {
-        const lat = pos.coords.latitude;
-        const lon = pos.coords.longitude;
-
-        document.getElementById("map-frame").src =
-        `https://maps.google.com/maps?q=${encodeURIComponent(place)}&near=${lat},${lon}&z=15&output=embed`;
-
-    }, () => alert("Please ALLOW location to continue ✅"));
-};
-
-// ✅ OPEN MAP FOR CITY
-window.openMap = (city) => {
-    document.getElementById("map-frame").src =
-    `https://maps.google.com/maps?q=${encodeURIComponent(city)}&z=11&output=embed`;
-};
-
-// ✅ SIDEBAR
+// ✅ Sidebar Menu
 document.getElementById("menu-toggle")?.addEventListener("click", () =>
     document.getElementById("sidebar-menu").classList.toggle("open")
 );

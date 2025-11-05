@@ -318,3 +318,135 @@ a{
 .comments-list p {
   background: #e9ecef; padding: 6px 10px; border-radius: 6px; margin-top: 6px; font-size: 14px;
 }
+/* --- Base Section Cards --- */
+.section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 5px;
+    max-width: 1000px;
+    margin: 20px auto;
+}
+
+.section a {
+    text-align: center;
+    text-decoration: none;
+    color: #333;
+    width: 150px;
+}
+
+.section img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.section img:hover {
+    transform: scale(1.05);
+}
+
+/* --- Explore Section --- */
+.explore-section {
+    text-align: center;
+    margin: 60px auto;
+    padding: 30px;
+    background: #343A40; /* Premium charcoal */
+    border-radius: 10px;
+    max-width: 1200px;
+}
+
+.explore-section h2 {
+    color: #CCA64C; /* Premium gold */
+    margin-bottom: 20px;
+}
+
+.destination-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+    justify-items: center;
+}
+
+.destination-card {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: transform 0.2s;
+    width: 180px;
+}
+
+.destination-card:hover {
+    transform: scale(1.05);
+}
+
+.destination-card img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+}
+
+.destination-card h3 {
+    margin: 10px;
+    font-size: 16px;
+    color: #333;
+}
+
+/* --- Map Results Container --- */
+#map-results {
+    text-align: center;
+    margin: 40px auto;
+    max-width: 1000px;
+    padding-bottom: 80px;
+}
+
+#map-frame {
+    width: 100%;
+    height: 500px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+/* --- Chat toggle --- */
+#chat-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    z-index: 1000;
+}
+
+/* --- Chatbot Box --- */
+#chatbot-box {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 300px;
+    height: 400px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    display: none;
+    flex-direction: column;
+    z-index: 1000;
+}
+
+/* --- Highlight Explore Link in Sidebar --- */
+.explore-link {
+    font-weight: bold;
+    color: #CCA64C;
+}
